@@ -47,6 +47,9 @@ dependencies:
   cloud_firestore: ^5.4.4
   firebase_storage: ^12.3.3
   url_launcher: ^6.3.1
+  flutter_quill: ^10.8.5
+  shared_preferences: ^2.3.2
+  cached_network_image: ^3.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

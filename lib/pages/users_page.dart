@@ -100,14 +100,14 @@ class _UsersPageState extends State<UsersPage> {
                                         icon: const Icon(Icons.edit),
                                         onPressed: () {
                                           // Handle edit action
-                                          print('Editing user: ${user['userName']}');
+                                          debugPrint('Editing user: ${user['userName']}');
                                         },
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.delete),
                                         onPressed: () {
                                           // Handle delete action
-                                          print('Deleting user: ${user['userName']}');
+                                          debugPrint('Deleting user: ${user['userName']}');
                                         },
                                       ),
                                     ],
@@ -170,14 +170,14 @@ class _UsersPageState extends State<UsersPage> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
                                         // Handle edit action
-                                        print('Editing user: ${user['userName']}');
+                                        debugPrint('Editing user: ${user['userName']}');
                                       },
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete),
                                       onPressed: () {
                                         // Handle delete action
-                                        print('Deleting user: ${user['userName']}');
+                                        debugPrint('Deleting user: ${user['userName']}');
                                       },
                                     ),
                                   ],

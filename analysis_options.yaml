@@ -13,6 +13,11 @@ analyzer:
     library_private_types_in_public_api: ignore
     unused_import: ignore
     unused_field: ignore
+    constant_identifier_names: ignore
+    unused_element: ignore
+    file_names: ignore
+    unnecessary_string_escapes: ignore
+    avoid_function_literals_in_foreach_calls: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

@@ -109,7 +109,7 @@ class _InstallationServiceState extends State<InstallationService> {
           currentDate.isAtSameMomentAs(expiryDate);
     } catch (e) {
       // Handle parsing error gracefully, maybe log the error or return false
-      print('Error parsing date: $e');
+      debugPrint('Error parsing date: $e');
       return false; // Assume the date is not expired in case of error
     }
   }

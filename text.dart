@@ -3,16 +3,16 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class AdvertisementList extends StatefulWidget {
+class DealsOfTheDay extends StatefulWidget {
   static const String id = "\webPageAdvertisementList";
-  const AdvertisementList({super.key});
+  const DealsOfTheDay({super.key});
 
   @override
-  _AdvertisementListState createState() => _AdvertisementListState();
+  _DealsOfTheDayState createState() => _DealsOfTheDayState();
 }
 
-class _AdvertisementListState extends State<AdvertisementList> {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('advertisements/header_ad');
+class _DealsOfTheDayState extends State<DealsOfTheDay> {
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('advertisements/deals_of_the_day_ad');
   late DatabaseReference _adsRef;
   List<Map<String, dynamic>> _advertisements = [];
   bool _isLoading = false;
@@ -37,8 +37,7 @@ class _AdvertisementListState extends State<AdvertisementList> {
         List<Map<String, dynamic>> ads = [];
         data.forEach((key, value) {
           ads.add({
-            'id':
-                key, // Add the advertisement ID for identifying each advertisement
+            'id': key, // Add the advertisement ID for identifying each advertisement
             'companyName': value['companyname'] ?? '',
             'fromDate': value['fromDate'] ?? '',
             'toDate': value['toDate'] ?? '',
@@ -159,8 +158,7 @@ class _AdvertisementListState extends State<AdvertisementList> {
                   decoration:
                       const InputDecoration(labelText: 'Selected Option'),
                 ),
-                TextField(
-                  controller: webLinkController,
+                TextField( controller: webLinkController,
                   decoration: const InputDecoration(labelText: 'Web Link'),
                 ),
                 TextField(
