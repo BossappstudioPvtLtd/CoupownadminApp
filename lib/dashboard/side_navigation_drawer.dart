@@ -1,8 +1,13 @@
 
 import 'package:coupown_admin/Const/app_colors.dart';
 import 'package:coupown_admin/dashboard/dashboard.dart';
+import 'package:coupown_admin/pages/Data/help_and_support.dart';
+import 'package:coupown_admin/pages/Data/terms_condition.dart';
+import 'package:coupown_admin/pages/category.dart';
 import 'package:coupown_admin/pages/advertisement.dart';
+import 'package:coupown_admin/pages/subcategory.dart';
 import 'package:coupown_admin/pages/users_page.dart';
+import 'package:coupown_admin/text5.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
@@ -38,6 +43,33 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
           chosenScreen = const Advertisement();
         });
         break;
+          case Category.id:
+        setState(() {
+          chosenScreen = const Category();
+        });
+        break;
+          case Subcategory.id:
+        setState(() {
+          chosenScreen = const Subcategory();
+        });
+        break;
+          case HelpAndSupport.id:
+        setState(() {
+          chosenScreen = const HelpAndSupport();
+        });
+        break;
+
+          case TermsCondition.id:
+        setState(() {
+          chosenScreen = const TermsCondition();
+        });
+        break;
+
+          case Text5.id:
+        setState(() {
+          chosenScreen = const Text5();
+        });
+        break;
 
       
     }
@@ -70,13 +102,39 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
           AdminMenuItem(
             title: "Users",
             route: UsersPage.id,
-            icon: CupertinoIcons.person_2_fill,
+            icon: CupertinoIcons.person,
           ),
             AdminMenuItem(
-            title: "ADD",
+            title: "Add",
             route: Advertisement.id,
-            icon: CupertinoIcons.tv_fill,
+            icon: CupertinoIcons.list_bullet_below_rectangle,
           ),
+            AdminMenuItem(
+            title: "Category",
+            route: Category.id,
+            icon: CupertinoIcons.layers,
+          ),
+            AdminMenuItem(
+            title: "Sub Category",
+            route: Subcategory.id,
+            icon: CupertinoIcons.layers_alt,
+          ),
+           AdminMenuItem(
+            title: "Help & Support",
+            route: HelpAndSupport.id,
+            icon: CupertinoIcons.exclamationmark_shield,
+          ),
+            AdminMenuItem(
+            title: "Terms & Condition",
+            route: TermsCondition.id,
+            icon: CupertinoIcons.shield_lefthalf_fill,
+          ),
+            AdminMenuItem(
+            title: "Text5",
+            route: Text5.id,
+            icon: CupertinoIcons.shield_lefthalf_fill,
+          ),
+         
          
         ],
         selectedRoute: UsersPage.id,

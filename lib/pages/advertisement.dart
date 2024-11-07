@@ -32,28 +32,39 @@ class _AdvertisementState extends State<Advertisement> {
   final _phoneController = TextEditingController();
   final _companyNameController =TextEditingController();
   
+  Uint8List? _selectedImageBytes;
+  
   File? _selectedImage;
-  String? _selectedOption;
+  String _imageError = '';
+  
   DateTime? _fromDate, _toDate;
+  String? _selectedOption;
   final _dropdownOptions = ['Header Ad', 'Trading Deald Ad', 'Deals Of The Day ad','Special Offers Ad' ,'Exclusive Offers Ad','Upcoming Offers Ad',"Instaltion & Services Ad"];
   final _picker = ImagePicker();
   final List<Map<String, dynamic>> _submittedData = [];
   String _phoneError = '';
 
  Future<void> _pickImage() async {
-  if (kIsWeb) {
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result != null) {
-      setState(() => _selectedImage = File(result.files.single.path!));
-    }
-  } else {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final image = File(pickedFile.path);
-      setState(() => _selectedImage = image);
+    if (kIsWeb) {
+      final result = await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null && result.files.single.bytes != null) {
+        setState(() {
+          _selectedImageBytes = result.files.single.bytes;
+          _selectedImage = null; // Ensure no file object is set in web
+          _imageError = '';
+        });
+      }
+    } else {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+          _selectedImageBytes = null; // Clear bytes for mobile
+          _imageError = '';
+        });
+      }
     }
   }
-}
 
 
   Future<void> _selectDateAndTime(BuildContext context, TextEditingController controller, bool isFromDate) async {
@@ -107,7 +118,7 @@ Future<String?> _uploadImageToFirebaseStorage(File imageFile) async {
     
     return imageUrl; // Return the URL of the uploaded image
   } catch (e) {
-    print("Error uploading image: $e");
+    debugPrint("Error uploading image: $e");
     return null;  // Return null if upload fails
   }
 }
@@ -170,7 +181,7 @@ bool _isLoading = false; // Add this to your class
               _isLoading = false;
             });
 
-            print("Data saved successfully!");
+            debugPrint("Data saved successfully!");
             _resetForm();
           } else {
             Navigator.pop(context); // Close the loading dialog on failure
@@ -184,7 +195,7 @@ bool _isLoading = false; // Add this to your class
           setState(() {
             _isLoading = false;
           });
-          print("Failed to upload image or save data: $error");
+          debugPrint("Failed to upload image or save data: $error");
           _showSnackBar('Failed to save data');
         }
       } else {
@@ -228,34 +239,51 @@ bool _isLoading = false; // Add this to your class
             Padding(padding: const EdgeInsets.all(16.0),
               
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Row( children: [
-                      IconButton(icon: const Icon(Icons.photo_library), onPressed: _pickImage),
-                     const SizedBox(width: 16),
-                        DottedBorder( borderType: BorderType.RRect,radius: const Radius.circular(8), color: Colors.grey, strokeWidth: 2,
-                          child: Container( width: 200, height: 100, alignment: Alignment.center,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blueGrey),
-                            child: _selectedImage != null ? Image.file(_selectedImage!, width: 200, height: 100, fit: BoxFit.cover)
-                                : const Center(child: Text('No Image', style: TextStyle(color: appColorPrimary))),
-                          ),
-                        ),
-                      ],
+                  children: [ Row(
+              children: [
+                IconButton(icon: const Icon(Icons.photo_library), onPressed: _pickImage),
+                const SizedBox(width: 16),
+                DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(8),
+                  color: Colors.grey,
+                  strokeWidth: 2,
+                  child: Container(
+                    width: 200,
+                    height: 100,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.blueGrey,
                     ),
+                    child: _selectedImageBytes != null
+                        ? Image.memory(_selectedImageBytes!, width: 200, height: 100, fit: BoxFit.cover)
+                        : _selectedImage != null
+                            ? Image.file(_selectedImage!, width: 200, height: 100, fit: BoxFit.cover)
+                            : const Text('Select an image', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
                     
                     const SizedBox(height: 16),
-                  Card( elevation: 5,color: appColorPrimary,
-                        child: DropdownButton<String>(borderRadius: BorderRadius.circular(8), dropdownColor: appColorPrimary,value: _selectedOption,isExpanded: true,
-                          hint: const Padding( padding: EdgeInsets.only(left: 10), child: Text('Select Option'),),
-                          items: _dropdownOptions.map((option) => DropdownMenuItem(value: option, child: Text(option))).toList(),
-                          onChanged: (newValue) => setState(() => _selectedOption = newValue),
-                        ), 
-                       ),
-                    const SizedBox(width: 16),
                 
-                  Card( elevation: 5, color: appColorPrimary,
-                           child: Padding(padding: const EdgeInsets.only(left: 10),child: TextField(controller: _companyNameController,
-                          decoration: const InputDecoration(hintText: 'Company Name',border: InputBorder.none,), ), ), ),
-                
+                    Card( elevation: 5, color: appColorPrimary,
+                     child: Padding(padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: DropdownButtonHideUnderline(
+                       child: DropdownButton<String>( value: _selectedOption, isExpanded: true,dropdownColor: appColorPrimary, hint: const Text('Select Option'),
+                        items: _dropdownOptions .map((option) => DropdownMenuItem( value: option, child: Text(option), ))
+                         .toList(),onChanged: (newValue) => setState(() => _selectedOption = newValue),
+      ),
+    ),
+  ),
+),
                     const SizedBox(height: 16),
+                
+                  Card(elevation: 5, color: appColorPrimary,
+                        child: Padding(padding: const EdgeInsets.only(left: 10),child: TextField(controller: _companyNameController,
+                          decoration: const InputDecoration(hintText: 'Company Name',border: InputBorder.none,), ), ), ),
+                     const SizedBox(height: 16),
                 
                     Card(elevation: 5, color: appColorPrimary,
                       child: Padding( padding: const EdgeInsets.only(left: 10),
@@ -281,11 +309,11 @@ bool _isLoading = false; // Add this to your class
                     const SizedBox(height: 16),
                     
                     Row( children: [
-                        Expanded( child: Card(elevation: 5, color: appColorPrimary,
-                            child: Padding(padding: const EdgeInsets.only(left: 10),
-                              child: TextField(controller: _fromDateController,
-                                decoration: const InputDecoration(  hintText: 'From Date/Time', border: InputBorder.none, ),
-                                readOnly: true, onTap: () => _selectDateAndTime(context, _fromDateController, true),
+                     Expanded( child: Card(elevation: 5, color: appColorPrimary,
+                      child: Padding(padding: const EdgeInsets.only(left: 10),
+                       child: TextField(controller: _fromDateController,
+                        decoration: const InputDecoration(  hintText: 'From Date/Time', border: InputBorder.none, ),
+                         readOnly: true, onTap: () => _selectDateAndTime(context, _fromDateController, true),
                               ),
                             ),
                           ),
